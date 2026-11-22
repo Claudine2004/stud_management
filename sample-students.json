@@ -1,0 +1,48 @@
+
+[
+  {
+    "id": 1,
+    "firstName": "Claudine",
+    "lastName": "Student",
+    "studentId": "RP001",
+    "email": "claudine@example.com",
+    "department": "Information Technology",
+    "level": "Level 8"
+  },
+  {
+    "id": 2,
+    "firstName": "Jean",
+    "lastName": "Mugisha",
+    "studentId": "RP002",
+    "email": "jean@example.com",
+    "department": "Software Development",
+    "level": "Level 7"
+  },
+  {
+    "id": 3,
+    "firstName": "Alice",
+    "lastName": "Uwase",
+    "studentId": "RP003",
+    "email": "alice@example.com",
+    "department": "Networking",
+    "level": "Level 6"
+  },
+  {
+    "id": 4,
+    "firstName": "Patrick",
+    "lastName": "Niyonzima",
+    "studentId": "RP004",
+    "email": "patrick@example.com",
+    "department": "Computer Science",
+    "level": "Level 8"
+  },
+  {
+    "id": 5,
+    "firstName": "Grace",
+    "lastName": "Mukamana",
+    "studentId": "RP005",
+    "email": "grace@example.com",
+    "department": "Information Technology",
+    "level": "Level 7"
+  }
+]
