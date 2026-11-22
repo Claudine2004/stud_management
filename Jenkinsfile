@@ -7,59 +7,60 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing project dependencies...'
-
                 bat 'npm ci'
-
-                echo 'Dependencies installed successfully!'
             }
         }
 
         stage('Unit Testing') {
             steps {
                 echo 'Running unit tests...'
-
                 bat 'npm run test:unit'
-
-                echo 'Unit tests completed successfully!'
             }
         }
 
         stage('Integration Testing') {
             steps {
                 echo 'Running integration tests...'
-
                 bat 'npm run test:integration'
-
-                echo 'Integration tests completed successfully!'
             }
         }
 
-        stage('Build') {
+        stage('SAST Security Scan') {
             steps {
-                echo 'Starting DevOps application Docker build...'
+                echo 'Scanning source code for security vulnerabilities...'
 
-                bat 'npm test'
+                bat '''
+                "C:/Users/DEFAULT.DESKTOP-MKB5J3F/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe" run --rm -v "%WORKSPACE%:/src" semgrep/semgrep semgrep scan --config p/security-audit --error /src
+                '''
+            }
+        }
 
-                bat '"C:/Users/DEFAULT.DESKTOP-MKB5J3F/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe" --version'
+        stage('Docker Build') {
+            steps {
+                echo 'Building Docker image...'
 
                 bat '"C:/Users/DEFAULT.DESKTOP-MKB5J3F/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe" build -t devops-app:1.0 .'
+            }
+        }
 
-                echo 'Docker image build completed!'
+        stage('Pipeline Summary') {
+            steps {
+                echo 'Unit tests, integration tests, SAST and Docker build completed successfully!'
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS: All tests passed and Docker image built successfully.'
+            echo 'SUCCESS: All tests and security scans passed!'
         }
 
         failure {
-            echo 'FAILURE: Check the Jenkins Console Output.'
+            echo 'FAILURE: Tests, Docker build or security scanning detected a problem!'
         }
 
         always {
-            echo 'Jenkins pipeline execution finished.'
+            echo 'Jenkins pipeline execution completed.'
         }
     }
 }
