@@ -104,7 +104,12 @@ app.use((req, res) => {
     });
 });
 
-// Start server
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Student Management System running at http://localhost:${PORT}`);
-});
+// Start server only when running directly
+if (require.main === module) {
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Student Management System running at http://localhost:${PORT}`);
+    });
+}
+
+// Export app for Jest and Supertest
+module.exports = app;

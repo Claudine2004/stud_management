@@ -3,9 +3,42 @@ pipeline {
     agent any
 
     stages {
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing project dependencies...'
+
+                bat 'npm ci'
+
+                echo 'Dependencies installed successfully!'
+            }
+        }
+
+        stage('Unit Testing') {
+            steps {
+                echo 'Running unit tests...'
+
+                bat 'npm run test:unit'
+
+                echo 'Unit tests completed successfully!'
+            }
+        }
+
+        stage('Integration Testing') {
+            steps {
+                echo 'Running integration tests...'
+
+                bat 'npm run test:integration'
+
+                echo 'Integration tests completed successfully!'
+            }
+        }
+
         stage('Build') {
             steps {
-                echo 'Starting DevOps application build...'
+                echo 'Starting DevOps application Docker build...'
+
+                bat 'npm test'
 
                 bat '"C:/Users/DEFAULT.DESKTOP-MKB5J3F/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe" --version'
 
@@ -18,7 +51,7 @@ pipeline {
 
     post {
         success {
-            echo 'SUCCESS: DevOps application built successfully.'
+            echo 'SUCCESS: All tests passed and Docker image built successfully.'
         }
 
         failure {
