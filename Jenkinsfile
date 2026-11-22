@@ -7,9 +7,9 @@ pipeline {
             steps {
                 echo 'Starting DevOps application build...'
 
-                bat 'docker --version'
+                bat '"C:/Users/DEFAULT.DESKTOP-MKB5J3F/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe" --version'
 
-                bat 'docker build -t devops-app:1.0 .'
+                bat '"C:/Users/DEFAULT.DESKTOP-MKB5J3F/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe" build -t devops-app:1.0 .'
 
                 echo 'Docker image build completed!'
             }
