@@ -21,6 +21,7 @@ stud_management/
 ├── index.html
 ├── login.html
 ├── register.html
+├── contact.html
 ├── server.js
 ├── package.json
 ├── package-lock.json
