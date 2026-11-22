@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - StudentMS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+  <main class="auth-card contact-card">
+    <div class="auth-brand">
+      <span class="brand-mark">S</span>
+      <strong>Student<span>MS</span></strong>
+    </div>
+
+    <h1>Contact Us</h1>
+    <p class="auth-subtitle">Send a message to the administration office</p>
+
+    <form id="contactForm" class="auth-form">
+      <label>
+        Name
+        <input id="name" type="text" placeholder="Your name" required>
+      </label>
+      <label>
+        Email
+        <input id="email" type="email" placeholder="you@example.com" required>
+      </label>
+      <label>
+        Message
+        <textarea id="message" placeholder="How can we help?" required></textarea>
+      </label>
+      <p class="form-message" id="formMessage"></p>
+      <button class="primary-button auth-button" type="submit">Send Message</button>
+    </form>
+
+    <p class="auth-link"><a href="index.html">Back to Dashboard</a></p>
+  </main>
+
+  <script>
+    document.getElementById("contactForm").addEventListener("submit", event => {
+      event.preventDefault();
+      document.getElementById("formMessage").textContent = "Your message has been sent.";
+      document.getElementById("formMessage").className = "form-message success";
+      event.currentTarget.reset();
+    });
+  </script>
+</body>
+</html>
