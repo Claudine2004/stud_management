@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - StudentMS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+  <main class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-mark">S</span>
+      <strong>Student<span>MS</span></strong>
+    </div>
+    <h1>Welcome back</h1>
+    <p class="auth-subtitle">Sign in to manage students</p>
+
+    <form id="loginForm" class="auth-form">
+      <label>
+        Email address
+        <input id="email" type="email" placeholder="admin@example.com" required>
+      </label>
+      <label>
+        Password
+        <input id="password" type="password" placeholder="Enter your password" required>
+      </label>
+      <p class="form-message" id="formMessage"></p>
+      <button class="primary-button auth-button" type="submit">Login</button>
+    </form>
+
+    <p class="auth-link">Don't have an account? <a href="register.html">Create account</a></p>
+  </main>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const users = JSON.parse(localStorage.getItem("studentUsers") || "[]");
+      const user = users.find(item => item.email === email && item.password === password);
+      const message = document.getElementById("formMessage");
+
+      if (!user) {
+        message.textContent = "Invalid email or password.";
+        message.className = "form-message error";
+        return;
+      }
+
+      localStorage.setItem("studentSession", JSON.stringify({ name: user.name, email: user.email }));
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
