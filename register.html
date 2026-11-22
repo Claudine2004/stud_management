@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - StudentMS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+  <main class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-mark">S</span>
+      <strong>Student<span>MS</span></strong>
+    </div>
+    <h1>Create account</h1>
+    <p class="auth-subtitle">Register to access the dashboard</p>
+
+    <form id="registerForm" class="auth-form">
+      <label>
+        Full name
+        <input id="name" type="text" placeholder="Your name" required>
+      </label>
+      <label>
+        Email address
+        <input id="email" type="email" placeholder="you@example.com" required>
+      </label>
+      <label>
+        Password
+        <input id="password" type="password" placeholder="Create a password" minlength="6" required>
+      </label>
+      <p class="form-message" id="formMessage"></p>
+      <button class="primary-button auth-button" type="submit">Create Account</button>
+    </form>
+
+    <p class="auth-link">Already have an account? <a href="login.html">Login</a></p>
+  </main>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const password = document.getElementById("password").value;
+      const users = JSON.parse(localStorage.getItem("studentUsers") || "[]");
+      const message = document.getElementById("formMessage");
+
+      if (users.some(user => user.email === email)) {
+        message.textContent = "An account with this email already exists.";
+        message.className = "form-message error";
+        return;
+      }
+
+      users.push({ name, email, password });
+      localStorage.setItem("studentUsers", JSON.stringify(users));
+      localStorage.setItem("studentSession", JSON.stringify({ name, email }));
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
