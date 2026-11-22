@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html" aria-label="Student Management home">
+        <span class="brand-mark">S</span>
+        <span>Student<span>MS</span></span>
+      </a>
+
+      <nav class="nav-list" aria-label="Main navigation">
+        <a class="nav-item active" href="index.html">
+          <span class="nav-icon">⌂</span>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="#students">
+          <span class="nav-icon">♟</span>
+          <span>Students</span>
+        </a>
+      </nav>
+
+      <button class="logout-button" id="logoutButton" type="button">
+        <span class="nav-icon">↪</span>
+        <span>Logout</span>
+      </button>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" type="button" aria-label="Toggle navigation">☰</button>
+        <div class="profile">
+          <div class="profile-avatar" id="profileAvatar">A</div>
+          <div>
+            <strong id="profileName">Administrator</strong>
+            <small>Administrator</small>
+          </div>
+        </div>
+      </header>
+
+      <section class="page">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Overview</p>
+            <h1>Student Dashboard</h1>
+          </div>
+          <button class="primary-button" id="openModalButton" type="button">
+            <span>＋</span> Add Student
+          </button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-icon purple">♟</div>
+            <div>
+              <p>Total Students</p>
+              <strong id="totalStudents">0</strong>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <div>
+              <p>Active Students</p>
+              <strong id="activeStudents">0</strong>
+            </div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-icon orange">▣</div>
+            <div>
+              <p>Departments</p>
+              <strong id="departmentCount">0</strong>
+            </div>
+          </article>
+        </div>
+
+        <section class="table-card" id="students">
+          <div class="table-toolbar">
+            <h2>Students</h2>
+            <label class="search-box">
+              <span>⌕</span>
+              <input id="searchInput" type="search" placeholder="Search students..." aria-label="Search students">
+            </label>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Student ID</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="studentModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-heading">
+        <h2 id="modalTitle">Add Student</h2>
+        <button class="close-button" id="closeModalButton" type="button" aria-label="Close">×</button>
+      </div>
+      <form id="studentForm">
+        <input type="hidden" id="studentKey">
+        <label>
+          Full name
+          <input id="studentName" type="text" placeholder="Enter full name" required>
+        </label>
+        <label>
+          Email address
+          <input id="studentEmail" type="email" placeholder="student@example.com" required>
+        </label>
+        <div class="form-row">
+          <label>
+            Student ID
+            <input id="studentId" type="text" placeholder="ST-1001" required>
+          </label>
+          <label>
+            Department
+            <select id="studentDepartment" required>
+              <option value="">Select department</option>
+              <option>Computer Science</option>
+              <option>Business</option>
+              <option>Engineering</option>
+              <option>Education</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          Status
+          <select id="studentStatus" required>
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button class="secondary-button" id="cancelButton" type="button">Cancel</button>
+          <button class="primary-button" type="submit">Save Student</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    const session = JSON.parse(localStorage.getItem("studentSession") || "null");
+    if (!session) window.location.href = "login.html";
+
+    const defaultStudents = [
+      { key: "1", name: "Emma Wilson", email: "emma.wilson@example.com", id: "ST-1001", department: "Computer Science", status: "Active" },
+      { key: "2", name: "Liam Carter", email: "liam.carter@example.com", id: "ST-1002", department: "Business", status: "Active" },
+      { key: "3", name: "Sophia Davis", email: "sophia.davis@example.com", id: "ST-1003", department: "Engineering", status: "Inactive" }
+    ];
+
+    let students = JSON.parse(localStorage.getItem("students") || "null") || defaultStudents;
+    if (!localStorage.getItem("students")) localStorage.setItem("students", JSON.stringify(students));
+
+    const table = document.getElementById("studentTable");
+    const modal = document.getElementById("studentModal");
+    const form = document.getElementById("studentForm");
+    const searchInput = document.getElementById("searchInput");
+
+    if (session) {
+      document.getElementById("profileName").textContent = session.name;
+      document.getElementById("profileAvatar").textContent = session.name.charAt(0).toUpperCase();
+    }
+
+    function escapeHtml(value) {
+      const element = document.createElement("div");
+      element.textContent = value;
+      return element.innerHTML;
+    }
+
+    function saveStudents() {
+      localStorage.setItem("students", JSON.stringify(students));
+    }
+
+    function renderStudents(query = "") {
+      const normalizedQuery = query.trim().toLowerCase();
+      const filtered = students.filter(student =>
+        [student.name, student.id, student.department, student.status, student.email]
+          .some(value => value.toLowerCase().includes(normalizedQuery))
+      );
+
+      table.innerHTML = filtered.length ? filtered.map(student => `
+        <tr>
+          <td>
+            <div class="student-cell">
+              <div class="student-avatar">${escapeHtml(student.name.charAt(0).toUpperCase())}</div>
+              <div><strong>${escapeHtml(student.name)}</strong><small>${escapeHtml(student.email)}</small></div>
+            </div>
+          </td>
+          <td>${escapeHtml(student.id)}</td>
+          <td>${escapeHtml(student.department)}</td>
+          <td><span class="status ${student.status === "Active" ? "active" : "inactive"}">${escapeHtml(student.status)}</span></td>
+          <td>
+            <div class="actions">
+              <button class="icon-button edit" type="button" data-edit="${student.key}" aria-label="Edit ${escapeHtml(student.name)}">✎</button>
+              <button class="icon-button delete" type="button" data-delete="${student.key}" aria-label="Delete ${escapeHtml(student.name)}">⌫</button>
+            </div>
+          </td>
+        </tr>
+      `).join("") : `
+        <tr><td class="empty-state" colspan="5">No students found</td></tr>
+      `;
+
+      document.getElementById("totalStudents").textContent = students.length;
+      document.getElementById("activeStudents").textContent = students.filter(student => student.status === "Active").length;
+      document.getElementById("departmentCount").textContent = new Set(students.map(student => student.department)).size;
+    }
+
+    function openModal(student = null) {
+      form.reset();
+      document.getElementById("modalTitle").textContent = student ? "Edit Student" : "Add Student";
+      document.getElementById("studentKey").value = student?.key || "";
+      if (student) {
+        document.getElementById("studentName").value = student.name;
+        document.getElementById("studentEmail").value = student.email;
+        document.getElementById("studentId").value = student.id;
+        document.getElementById("studentDepartment").value = student.department;
+        document.getElementById("studentStatus").value = student.status;
+      }
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.getElementById("studentName").focus();
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    document.getElementById("openModalButton").addEventListener("click", () => openModal());
+    document.getElementById("closeModalButton").addEventListener("click", closeModal);
+    document.getElementById("cancelButton").addEventListener("click", closeModal);
+    modal.addEventListener("click", event => {
+      if (event.target === modal) closeModal();
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const key = document.getElementById("studentKey").value;
+      const student = {
+        key: key || String(Date.now()),
+        name: document.getElementById("studentName").value.trim(),
+        email: document.getElementById("studentEmail").value.trim(),
+        id: document.getElementById("studentId").value.trim(),
+        department: document.getElementById("studentDepartment").value,
+        status: document.getElementById("studentStatus").value
+      };
+
+      if (key) {
+        students = students.map(item => item.key === key ? student : item);
+      } else {
+        students.unshift(student);
+      }
+      saveStudents();
+      renderStudents(searchInput.value);
+      closeModal();
+    });
+
+    table.addEventListener("click", event => {
+      const editButton = event.target.closest("[data-edit]");
+      const deleteButton = event.target.closest("[data-delete]");
+      if (editButton) {
+        openModal(students.find(student => student.key === editButton.dataset.edit));
+      }
+      if (deleteButton) {
+        const student = students.find(item => item.key === deleteButton.dataset.delete);
+        if (student && confirm(`Delete ${student.name}?`)) {
+          students = students.filter(item => item.key !== student.key);
+          saveStudents();
+          renderStudents(searchInput.value);
+        }
+      }
+    });
+
+    searchInput.addEventListener("input", () => renderStudents(searchInput.value));
+    document.getElementById("logoutButton").addEventListener("click", () => {
+      localStorage.removeItem("studentSession");
+      window.location.href = "login.html";
+    });
+    document.getElementById("menuButton").addEventListener("click", () => {
+      document.querySelector(".sidebar").classList.toggle("open");
+    });
+
+    renderStudents();
+  </script>
+</body>
+</html>
