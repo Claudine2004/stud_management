@@ -1,0 +1,22 @@
+
+{
+  "name": "student-management-system",
+  "version": "1.0.0",
+  "description": "Student Management System using Node.js, Express and JSON",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "student-management",
+    "nodejs",
+    "express",
+    "json"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
